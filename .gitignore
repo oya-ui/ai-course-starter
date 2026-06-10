@@ -1,0 +1,5 @@
+# 受講生が create-next-app で作る実装プロジェクトは別リポジトリで管理する
+/my-mvp/
+
+# macOS
+.DS_Store
