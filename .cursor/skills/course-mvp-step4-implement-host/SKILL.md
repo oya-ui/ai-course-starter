@@ -1,80 +1,142 @@
 ---
 name: course-mvp-step4-implement-host
 description: >-
-  After Step3 mock approval: builds STEP4_IMPLEMENTATION_PLAN.md from STACK_CHOICE,
-  story, mock, ER-style data plan; runs npm install first; implements Next+Supabase per
-  course stack; deploys to Vercel and chases until HTTPS URL works. For beginners.
-  Use when Step4, 実装, デプロイ, Vercel, npm, ホスティング, MVP 本番.
+  Step3 のモック了承後、Next.js + Supabase で実装し Vercel にデプロイする。初心者向け。
+  Use for Step4, 実装, コーディング, デプロイ, Vercel, Supabase, npm, Next.js, 本番公開, ホスティング, Step3 の次.
 ---
 
-# AIコース — Step4（実装計画 → 実装 → ホスティングまで）
+# AIコース — Step4（実装 → ホスティング）
 
 ## 目的
 
-Step3 で **モックが了承されたあと**、**静的 HTML をそのまま本番にしない**。`docs/STACK_CHOICE.md`（**Next.js + Vercel + Supabase**）と、`docs/mvp/STEP2_STORY_SCENARIO.md`・`docs/mvp/STEP3_UI_MOCK.html` を参照して **実装計画** を立て、**依存関係のインストール → 実装 → Vercel でホスティング**まで行う。
+`mvp/STEP3_UI_MOCK.html` のモックを本番の Next.js アプリに変え、
+**HTTPS の公開 URL が開くところまで**初心者でも迷わず進めるよう伴走する。
 
-受講生が **初心者でも次の一手が分かる**ように、**チェックリストと短い説明**を会話に出し続ける。**公開 URL がブラウザで開き、必達の核が動くところまで**ついて、**成功したら Step4 終了**（無限追いはしないが、デプロイ成功まで **諦めずにトラブルシュート**する）。
+---
 
-## 先に読む（リポジトリにあるとき）
+## 入力の確認
 
-- `docs/mvp/STEP2_STORY_SCENARIO.md`（画面・除外）
-- `docs/mvp/STEP3_UI_MOCK.html`（レイアウトの意図）
-- `docs/mvp/STEP1_MVP_HYPOTHESIS.md`（G3）
-- `docs/STACK_CHOICE.md`（**標準スタックの正**）
-- `docs/MVP_CHECKLIST.md`（必達）
-- `docs/milestone_rubrics.md`
-- `docs/mvp/STEP4_IMPLEMENTATION_PLAN.md`（テンプレ）
+最初に以下を読む（ない場合はユーザーに貼ってもらう）。
 
-## 前提
+- `mvp/STEP2.md`（画面 ID・除外リスト）
+- `mvp/STEP3_UI_MOCK.html`（画面レイアウトの意図）
+- `mvp/STEP1.md`（主導線・ログイン/DB の有無）
 
-- **ワークスペース**: 受講生が **Next プロジェクトのルート**を開いていること（教材で配布したリポジトリ、または `create-next-app` で作成したフォルダ）。
-- プロジェクトが **まだない**場合: `docs/STACK_CHOICE.md` に従い、**App Router の Next.js** を作成する手順を**1ステップずつ**案内してから進める。
+---
 
-## 全体フロー（必須順序）
+## 標準スタック（インライン定義）
 
-1. **計画（ドキュメント）**: `docs/mvp/STEP4_IMPLEMENTATION_PLAN.md` を埋める — **ルート対応、ER イメージ（テーブル／カラム案）、環境変数キー名一覧**（値は書かない）。
-2. **環境**: Node / npm（または pnpm）が使えるか確認。**プロジェクトルートで `npm install`（または教材指定のコマンド）を実行** — **パッケージが揃ってから**実装に入る。
-3. **実装**: 計画に沿い、**主導線1本**を最優先。モックの見た目は **可能な範囲で**寄せる（ピクセル完全一致は不要）。
-4. **ローカル確認**: `npm run dev` で動作。**エラーが出たらログを読み、直してから次へ**。
-5. **ホスティング**: **Vercel** に接続（教材の手順に合わせる）。**環境変数**を Vercel 側に設定（`.env` の**キー名**は README に記載）。
-6. **成功条件**: **HTTPS の公開 URL** を開き、**必達の核（主導線・ログイン or DB）**が確認できる。**成功を宣言**し、Step4 終了。
+| 役割 | ツール | 理由 |
+|------|--------|------|
+| フレームワーク | Next.js 14（App Router） | Vercel と相性が良い・日本語情報が多い |
+| スタイル | Tailwind CSS | クラス名だけで書ける・初心者向き |
+| DB / 認証 | Supabase | 無料枠あり・管理画面で操作できる |
+| ホスティング | Vercel | GitHub 連携でボタン1つでデプロイ |
 
-### ホスティングで止まったとき（必ず繰り返す）
+---
 
-- **ビルド失敗**: Vercel のログを読み、ローカルで `npm run build` を再現して直す。
-- **本番だけ失敗**: 環境変数のキーが Vercel に入っているか、**名前の typo** を確認。
-- **動くがデータが出ない**: Supabase の URL/キー・RLS・テーブル名を `STACK_CHOICE` と教材に照らす。
-- 直したら **再デプロイ → 再度 URL 確認**。**公開が通るまで**手順を繰り返す（ユーザーが諦める場合はメンター相談を促す）。
+## 全体フロー（必ず順番通りに）
 
-## 計画に含めるもの（`STEP4_IMPLEMENTATION_PLAN.md`）
+### 1. 事前確認
 
-| ブロック | 内容 |
-|----------|------|
-| 画面→ルート | S1/S2… を `app/.../page.tsx` 等にどう対応するか |
-| データ | **ER 図（Mermaid 可）または表**：テーブル名、主キー、外部キー、最低限のカラム |
-| 認証・RLS | Supabase を使う場合の方針（教材に従う） |
-| 環境変数 | `NEXT_PUBLIC_*` / Supabase URL / anon key 等の**キー名だけ** |
+- Node.js / npm が入っているか確認 → `node -v` を実行してもらう
+  - 入っていない場合 → `docs/NODE_SETUP.md` を開いてセットアップしてから戻る
+- Supabase / Vercel アカウントがあるか確認
+  - ない場合 → `docs/SUPABASE_SETUP.md` / `docs/VERCEL_SETUP.md` を参照
 
-## 初心者向けの説明のしかた
+### 2. プロジェクト作成
 
-- 各ステップで **「いま何をしているか」** を1文（例: 「いまはライブラリをダウンロードしています」）。
-- **次に押すコマンド**を1つだけ明示（コピペ可能に）。
-- エラー時は **ログの先頭のエラーメッセージ**を読み、**検索語**を1つ提案。
-- **秘密情報**をチャットやコードに貼らないよう毎回注意（`MVP_CHECKLIST`）。
+```bash
+# ターミナルで実行（プロジェクト名は何でもOK）
+npx create-next-app@latest my-mvp --typescript --tailwind --app --no-src-dir --no-import-alias
+cd my-mvp
+```
+
+### 3. 実装計画を作る
+
+`mvp/STEP4.md` に以下を書く（書いてから実装に入る）。
+
+```markdown
+# MVP Step4 実装計画
+
+## 画面 → ルート対応
+| 画面 ID | ファイルパス |
+|---------|------------|
+| S1 | app/page.tsx |
+| S2 | app/list/page.tsx |
+
+## データ設計（簡易 ER）
+| テーブル名 | 主なカラム |
+|-----------|-----------|
+| （例）items | id, title, created_at |
+
+## 環境変数キー名（値は書かない）
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+## 優先順位
+1. S1（主導線の起点）
+2. S2（主導線の終点）
+3. 必要なら S3…
+```
+
+### 4. パッケージインストール
+
+```bash
+npm install @supabase/supabase-js
+```
+
+### 5. 実装（主導線1本を最優先）
+
+- まず S1 から S2 の流れが「動く」状態を作る
+- モックの見た目は「だいたい近ければ OK」（完全一致は不要）
+- **秘密情報（API キー・パスワード）をチャットやコードに直接書かない**
+  → `.env.local` ファイルに書いて、ファイル名を `.gitignore` に追加する
+
+### 6. ローカル確認
+
+```bash
+npm run dev
+```
+
+ブラウザで `http://localhost:3000` を開いて主導線が動くか確認。
+エラーが出たら**ターミナルのエラーメッセージをコピーしてチャットに貼る**。
+
+### 7. Vercel デプロイ
+
+1. GitHub にコードを push（プロジェクトを GitHub リポジトリにしておく）
+2. [vercel.com](https://vercel.com) → 「Import Git Repository」
+3. 環境変数を Vercel の UI で設定（`.env.local` の内容を Vercel 側に入力）
+4. 「Deploy」ボタンを押す
+5. デプロイ完了後、HTTPS URL をブラウザで開いて動作確認
+
+詳細は `docs/VERCEL_SETUP.md` を参照。
+
+---
+
+## デプロイでつまずいた時
+
+| 症状 | 確認ポイント |
+|------|------------|
+| ビルド失敗 | ローカルで `npm run build` を実行してエラーを再現 → 直してから再デプロイ |
+| 本番だけ動かない | Vercel の環境変数のキー名に typo がないか確認 |
+| データが出ない | Supabase の URL / anon key・テーブル名・RLS 設定を確認 |
+
+→ 3回直しても解消しない場合はメンターに相談する。
+
+---
+
+## Step4 完了の宣言
+
+HTTPS URL でアプリが動いたら：
+
+> Step4 完了。公開 URL: （URL）
+> `mvp/STEP4.md` のチェックリストをすべて満たしています。
+
+---
 
 ## やらないこと
 
-- Step3 了承前に本番実装だけ進めない（モックとストーリーを正とする）。
-- **Bolt 等の別リポジトリ**を本番の正にしない。
-- `.env` の**値**を Skill の出力にそのまま載せない。
-
-## 終了宣言（テンプレ）
-
-成功時に一言:
-
-> Step4 完了。公開 URL: （URL）。`STEP4_IMPLEMENTATION_PLAN.md` のチェックリストを満たしています。
-
-## 追加リソース
-
-- Step3: `course-mvp-step3-ui-mock`
-- `docs/SETUP_CHECKLIST.md`
+- Step3 の了承前に実装だけ先に進めない
+- `.env.local` の**値**をチャットやコードに直接載せない
+- エラーを無視して次のステップに進まない（必ずログを読んで直す）

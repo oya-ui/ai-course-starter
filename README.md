@@ -1,86 +1,129 @@
 # ai-course-starter
 
-AIコース受講生向けの Cursor スキルセットです。  
-このリポジトリをクローンして自分のプロジェクトに置くと、チャットから `/skill名` で呼び出せるようになります。
+Cursor を使って web アプリを作るコースのスターターキットです。  
+このリポジトリをクローンすると、Cursor のチャットから AI スキルを呼び出せるようになります。
 
 ---
 
-## セットアップ
+## 受講開始までの手順
+
+### Step 0: 準備する（4つ）
+
+| # | やること | ガイド |
+|---|---------|--------|
+| 1 | このリポジトリをクローンする | 下記参照 |
+| 2 | Cursor をインストール・設定する | [docs/SETUP.md](docs/SETUP.md) |
+| 3 | Node.js / npm をインストールする | [docs/NODE_SETUP.md](docs/NODE_SETUP.md) |
+| 4 | Supabase / Vercel のアカウントを作っておく | [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md) / [docs/VERCEL_SETUP.md](docs/VERCEL_SETUP.md) |
+
+### クローン方法
 
 ```bash
 git clone https://github.com/oya-ui/ai-course-starter.git
+cd ai-course-starter
 ```
 
-クローンしたら、Cursor でこのフォルダを開くか、**自分のプロジェクトの `.cursor/` フォルダに中身をコピー**してください。
+クローン後、**Cursor でこのフォルダを開く**（`File → Open Folder...`）。
+
+> スキルは Cursor でフォルダを開いたときに自動で読み込まれます。  
+> 認識されない場合は Cursor を再起動してください。
+
+---
+
+## アプリを作る流れ（Step 1〜4）
+
+```
+Step 1: 何を作るかを決める（MVP仮説）
+  ↓  /course-mvp-step1-hypothesis
+Step 2: 画面とスコープを整理する
+  ↓  /course-mvp-step2-story-scope
+Step 3: UI モックを作って確認する
+  ↓  /course-mvp-step3-ui-mock
+Step 4: 実装して Vercel に公開する
+     /course-mvp-step4-implement-host
+```
+
+各ステップで **Cursor のチャット欄にスキル名を入力**すると AI が対話しながら進めてくれます。
 
 ---
 
 ## スキル一覧
 
-### `business-plan-interview`
+### `course-mvp-step1-hypothesis` — MVP の仮説を固める
 
-事業プランや意思決定メモを対話形式で整理するスキル。  
-AIが順番に質問しながら「論点の地図 → 突破順 → 1枚サマリー」まで作ってくれます。
+「何を作るか」を対話形式で整理するスキル。  
+誰のどんな課題を解決するか、実現難易度（緑/黄/赤）を確認しながら絞り込みます。  
+完了すると `mvp/STEP1.md` が作成されます。
 
-呼び出し方：チャットで `/business-plan-interview` または「事業プラン」「ビジネスプラン」と入力する
-
----
-
-### `course-mvp-step1-hypothesis`
-
-**MVP Step 1 ── 仮説づくり**
-
-実現難易度（緑/黄/赤）を確認しながら、MVP の仮説ドキュメント `STEP1_MVP_HYPOTHESIS.md` を作成します。
-
-呼び出し方：`/course-mvp-step1-hypothesis` または「Step1」「MVP仮説」
+呼び出し方: `/course-mvp-step1-hypothesis`、「Step1」、「MVP仮説」、「何を作るか」
 
 ---
 
-### `course-mvp-step2-story-scope`
+### `course-mvp-step2-story-scope` — 画面とスコープを整理する
 
-**MVP Step 2 ── ストーリー & スコープ整理**
+Step1 の仮説をもとに、ユーザーストーリー・画面一覧・スコープ（段 A〜D）を整理します。  
+完了すると `mvp/STEP2.md` が作成されます。
 
-Step1 の仮説をもとに、ユーザーストーリー・画面一覧・スコープ（A〜D段階）・MVP チェックリストをまとめた `STEP2_STORY_SCENARIO.md` を作成します。
-
-呼び出し方：`/course-mvp-step2-story-scope` または「Step2」「ストーリー」「スコープ」
-
----
-
-### `course-mvp-step3-ui-mock`
-
-**MVP Step 3 ── UI モック作成 & フィードバックループ**
-
-Step2 のストーリーをもとに `STEP3_UI_MOCK.html` を生成し、フィードバック → 改善を繰り返します。OKが出るまで対話形式で磨きます。
-
-呼び出し方：`/course-mvp-step3-ui-mock` または「Step3」「モック」「フィードバック」
+呼び出し方: `/course-mvp-step2-story-scope`、「Step2」、「ストーリー」、「スコープ」、「画面整理」
 
 ---
 
-### `course-mvp-step4-implement-host`
+### `course-mvp-step3-ui-mock` — UI モックを作って磨く
 
-**MVP Step 4 ── 実装 & デプロイ**
+Step2 の画面一覧をもとに静的 HTML モック（`mvp/STEP3_UI_MOCK.html`）を作ります。  
+フィードバックを繰り返して（最大 5 往復）「これでいい」と言えるまで一緒に磨きます。
 
-Step3 のモック承認後、`STEP4_IMPLEMENTATION_PLAN.md` を作成し、Next.js + Supabase で実装、Vercel にデプロイするまで伴走します。初心者向けに npm install から順に進めます。
-
-呼び出し方：`/course-mvp-step4-implement-host` または「Step4」「実装」「デプロイ」
+呼び出し方: `/course-mvp-step3-ui-mock`、「Step3」、「モック」、「UI」、「画面を作る」
 
 ---
 
-## ステップの流れ
+### `course-mvp-step4-implement-host` — 実装して本番公開する
+
+モック了承後、Next.js + Supabase で実装し Vercel にデプロイするまで伴走します。  
+初心者向けに「今何をしているか」を1ステップずつ説明しながら進めます。
+
+呼び出し方: `/course-mvp-step4-implement-host`、「Step4」、「実装」、「デプロイ」、「本番公開」
+
+---
+
+## Cursor Pro の使い方の心得
+
+- **1メッセージ1テーマ**: あれもこれも一度に頼まず、1つ解決してから次へ
+- **エラーはログをそのままコピペ**: 説明せずターミナルのエラーをそのまま貼る
+- **長くなったら新しいチャットを開く**: コンテキストが重くなると精度が下がる
+- **成果物はこまめに確認**: `mvp/` フォルダのファイルが更新されているか都度確認する
+
+---
+
+## うまくいかないとき
+
+| 症状 | 対処 |
+|------|------|
+| スキルが起動しない | Cursor を再起動 → チャットを新しく開く |
+| `npm: command not found` | [docs/NODE_SETUP.md](docs/NODE_SETUP.md) を確認 |
+| Vercel ビルドエラー | ローカルで `npm run build` してエラーを確認 |
+| Supabase のデータが出ない | RLS 設定と環境変数のキー名を確認 |
+| 3 回試してもダメ | メンターに相談する |
+
+---
+
+## ディレクトリ構成
 
 ```
-Step1: 仮説づくり
-  ↓
-Step2: ストーリー & スコープ整理
-  ↓
-Step3: UI モック作成（フィードバックループ）
-  ↓
-Step4: 実装 & Vercel デプロイ
+ai-course-starter/
+├── README.md
+├── docs/
+│   ├── SETUP.md          ← Cursor の設定・モデル選び・Pro 上限
+│   ├── NODE_SETUP.md     ← Node.js のインストール手順
+│   ├── SUPABASE_SETUP.md ← Supabase のアカウント作成〜API キー取得
+│   └── VERCEL_SETUP.md   ← Vercel へのデプロイ手順
+└── .cursor/
+    └── skills/
+        ├── course-mvp-step1-hypothesis/SKILL.md
+        ├── course-mvp-step2-story-scope/SKILL.md
+        ├── course-mvp-step3-ui-mock/SKILL.md
+        └── course-mvp-step4-implement-host/SKILL.md
 ```
 
----
-
-## 注意
-
-- `.cursor/skills/` と `.cursor/rules/` の中身が機能します。Cursor 以外のエディタでは動きません。
-- スキルは Cursor のチャット欄から `/スキル名` で呼び出してください。
+> `.cursor/` フォルダはスキルの本体です。削除しないでください。  
+> アプリのコードは別のフォルダ（例: `~/Documents/Projects/my-mvp`）に作成します。
